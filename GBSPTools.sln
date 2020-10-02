@@ -1,13 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbsp", "gbsp\gbsp.vcxproj", "{18170A89-1D9F-49CF-8D78-01080A311757}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gvis", "gvis\gvis.vcxproj", "{9972CF26-256E-488F-970C-F68FF2941F21}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glight", "glight\glight.vcxproj", "{21C9CE1B-C1B9-44D5-83FA-50270E8905CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{19CA9AC7-B870-4247-BA54-4AD1157BA2CF}"
+	ProjectSection(SolutionItems) = preProject
+		common\basetype.h = common\basetype.h
+		common\gbsplib.h = common\gbsplib.h
+		common\gbsptools.h = common\gbsptools.h
+		common\mathlib.h = common\mathlib.h
+		common\vec3d.h = common\vec3d.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
