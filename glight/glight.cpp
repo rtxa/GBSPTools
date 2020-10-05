@@ -30,30 +30,14 @@ int main(int argc, char *argv[]) {
 	InitCompilerParms(&compParms);
 	ParseCmdArgs(argc, argv, &compParms);
 
-	// load compiler dll
-	GBSP_Hook compHook;
-	compHook.Printf = Compiler_PrintfCallback;
-	compHook.Error = Compiler_ErrorfCallback;
+	// load gbsplib.dll to access the map compiler functions
+	HINSTANCE compHandle;
+	GBSP_FuncHook* compFHook;
 
-	HMODULE compHandle = LoadLibrary("gbsplib.dll");;
-	if (compHandle == NULL) {
-		fprintf(stderr, "Compile Failed: Unable to load gbsplib.dll!");
-		return COMPILER_ERROR_NODLL;
-	}
+	CompilerErrorEnum result = Compiler_LoadCompilerDLL(compFHook, compHandle, Compiler_ErrorfCallback, Compiler_PrintfCallback);
 
-	GBSP_INIT *compInit = (GBSP_INIT*)GetProcAddress(compHandle, "GBSP_Init");
-	if (compInit == NULL) {
-		fprintf(stderr, "Compile Failed: Couldn't initialize GBSP_Init, GBSPLib.Dll.\n");
-		FreeLibrary(compHandle);
-		return COMPILER_ERROR_MISSINGFUNC;
-	}
-
-	GBSP_FuncHook *compFHook = compInit(&compHook);;
-
-	if (compFHook == NULL) {
-		fprintf(stderr, "Compile Failed: GBSP_Init returned NULL Hook!, GBSPLib.Dll.\n");
-		FreeLibrary(compHandle);
-		return COMPILER_ERROR_MISSINGFUNC;
+	if (result != CompilerErrorEnum::COMPILER_ERROR_NONE) {
+		return result;
 	}
 
 	// finished loading dll, begin with LIGHT compilation
@@ -67,9 +51,9 @@ int main(int argc, char *argv[]) {
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
-	FreeLibrary(compHandle);
-
 	printf("---- %s ----\n\n\n\n", "END glight");
+
+	FreeLibrary(compHandle);
 
 	return COMPILER_ERROR_NONE;
 }
