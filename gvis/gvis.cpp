@@ -14,6 +14,7 @@
 #include "gvis.h"
 #include "gbsplib.h"
 #include "gbsptools.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
 	printf("gvis v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
@@ -39,14 +40,16 @@ int main(int argc, char *argv[]) {
 		return result;
 	}
 
-	// finished loading dll, begin with VIS compilation
-	char bspFullPath[MAX_PATH];
-	sprintf_s(bspFullPath, "%s\\%s%s", path, compParms.mapName, ".bsp");
+	std::string bspPath(compParms.mapName);
+
+	// make path readable for GBSPLib and use this extension if not provided
+	GBSPTools::PathToUnix(bspPath);
+	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
 	printf("---- %s ----\n", "BEGIN gvis");
 	
-	if (compFHook->GBSP_VisGBSPFile(bspFullPath, &compParms.vis) == GBSP_ERROR) {
-		fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspFullPath);
+	if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
+		fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
@@ -59,13 +62,13 @@ int main(int argc, char *argv[]) {
 
 //========================================================================================
 //	ParseCmdArgs()
-//	This parse command line arguments for load them into compiler parameters
+//	This parse command line arguments to load them into the compiler parameters
 //========================================================================================
 void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 	if (argc < 2)
 		ShowUsage();
 
-	geBoolean hasLoadMap = GE_FALSE;
+	bool hasLoadMap = false;
 
 	printf("Arguments:");
 	for (int i = 1; i < argc; i++) {
@@ -84,7 +87,7 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 			if (!hasLoadMap) {
 				strcpy_s(parms->mapName, argv[i]);
 				printf(" %s", parms->mapName);
-				hasLoadMap = GE_TRUE;
+				hasLoadMap = true;
 			} else {
 				ShowUsage();
 			}

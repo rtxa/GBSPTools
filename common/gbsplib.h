@@ -81,13 +81,13 @@ typedef enum
 
 extern geBoolean	CancelRequest;		// Global cancel request...
 
-typedef GBSP_RETVAL GBSP_CREATE_BSP(char *MapText, BspParms *Parms);
-typedef GBSP_RETVAL GBSP_S_FILE(char *FileName);
+typedef GBSP_RETVAL GBSP_CREATE_BSP(const char *MapText, BspParms *Parms);
+typedef GBSP_RETVAL GBSP_S_FILE(const char *FileName);
 typedef void GBSP_FREE_BSP(void);
-typedef GBSP_RETVAL GBSP_VIS_FILE(char *FileName, VisParms *Parms);
-typedef GBSP_RETVAL GBSP_LIGHT_FILE(char *FileName, LightParms *Parms);
+typedef GBSP_RETVAL GBSP_VIS_FILE(const char *FileName, VisParms *Parms);
+typedef GBSP_RETVAL GBSP_LIGHT_FILE(const char *FileName, LightParms *Parms);
 typedef geBoolean GBSP_CANCEL_COMPILE(void);
-typedef geBoolean GBSP_UPDATE_ENTITIES(char *MapName, char *BSPName);
+typedef geBoolean GBSP_UPDATE_ENTITIES(const char *MapName, const char *BSPName);
 
 typedef struct
 {

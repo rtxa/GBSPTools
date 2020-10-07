@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{19CA9A
 		common\gbsplib.h = common\gbsplib.h
 		common\gbsptools.h = common\gbsptools.h
 		common\mathlib.h = common\mathlib.h
+		common\utils.h = common\utils.h
 		common\vec3d.h = common\vec3d.h
 	EndProjectSection
 EndProject

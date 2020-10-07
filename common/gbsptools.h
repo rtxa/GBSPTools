@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-#define GBSPTOOLS_VERSION 0.8
+#define GBSPTOOLS_VERSION 0.9
 #define GBSPTOOLS_AUTHOR "rtxa"
 #define GBSPTOOLS_CONTACT "usertxa@gmail.com"
 

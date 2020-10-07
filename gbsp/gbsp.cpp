@@ -11,6 +11,7 @@
 #include "gbsp.h"
 #include "gbsplib.h"
 #include "gbsptools.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
 	printf("gbsp v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
@@ -36,17 +37,31 @@ int main(int argc, char *argv[]) {
 		return result;
 	}
 
-	// finished loading dll, begin with BSP compilation
-	char mapFullPath[MAX_PATH];
-	sprintf_s(mapFullPath, "%s\\%s%s", path, compParms.mapName, ".map");
+	std::string mapPath(compParms.mapName);
 
-	char bspFullPath[MAX_PATH];
-	sprintf_s(bspFullPath, "%s\\%s%s", path, compParms.mapName, ".bsp");
+	std::string bspPath;
+
+	// create destination name if not specified
+	if (!compParms.bspName[0]) {
+		bspPath = std::string(mapPath);
+		GBSPTools::StripExtension(bspPath);
+		bspPath.append(".bsp");
+	} else {
+		bspPath = std::string(compParms.bspName);
+	}
+
+	// convert path to unix so GBSPLib can read it correctly
+	GBSPTools::PathToUnix(mapPath);
+	GBSPTools::PathToUnix(bspPath);
+
+	// use this extension if specified files don't provide them
+	GBSPTools::DefaultExtension(mapPath, ".map");
+	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
 	printf("---- %s ----\n", "BEGIN gbsp");
 
 	if (compParms.updateEnts == GE_TRUE) {
-		if (compFHook->GBSP_UpdateEntities(mapFullPath, bspFullPath) == GE_TRUE) {
+		if (compFHook->GBSP_UpdateEntities(mapPath.c_str(), bspPath.c_str()) == GE_TRUE) {
 			printf("---- %s ----\n\n\n\n", "END gbsp");
 			return COMPILER_ERROR_NONE;
 		} else {
@@ -56,16 +71,16 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapFullPath, &compParms.bsp);
+	GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapPath.c_str(), &compParms.bsp);
 	if (gbspResult == GBSP_ERROR) {
 		fprintf(stderr, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n.");
 		printf("---- %s ----\n\n\n\n", "END bsp");
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
-	gbspResult = compFHook->GBSP_SaveGBSPFile(bspFullPath);
+	gbspResult = compFHook->GBSP_SaveGBSPFile(bspPath.c_str());
 	if (gbspResult == GBSP_ERROR) {
-		fprintf(stderr, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspFullPath);
+		fprintf(stderr, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
 		printf("---- %s ----\n\n\n\n", "END gbsp");
 		return COMPILER_ERROR_BSPSAVE;
 	}
@@ -81,13 +96,14 @@ int main(int argc, char *argv[]) {
 
 //========================================================================================
 //	ParseCmdArgs()
-//	This parse command line arguments for load them into compiler parameters
+//	This parses command line arguments to load them into the compiler parameters
 //========================================================================================
 void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 	if (argc < 2)
 		ShowUsage();
 
-	geBoolean hasLoadMap = GE_FALSE;
+	bool hasLoadMap = false;
+	bool hasLoadBsp = false;
 
 	printf("Arguments:");
 	for (int i = 1; i < argc; i++) {
@@ -104,14 +120,19 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 			if (!hasLoadMap) {
 				strcpy_s(parms->mapName, argv[i]);
 				printf(" %s", parms->mapName);
-				hasLoadMap = GE_TRUE;
-			} else {
-				ShowUsage();
+				hasLoadMap = true;
+			} else if (!hasLoadBsp) {
+				strcpy_s(parms->bspName, argv[i]);
+				printf(" %s", parms->bspName);
+				hasLoadBsp = true;
 			}
 		}
 	}
-	if (!hasLoadMap) 
+
+	if (!hasLoadMap) {
 		ShowUsage();
+	}
+
 	printf("\n");
 }
 
@@ -122,6 +143,7 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 void ShowUsage(void) {
 	printf("\n--- gbsp Options ---\n");
 	printf("    %-20s : %s\n", "mapname",		"The .map file to process.");
+	printf("    %-20s : %s\n", "[destname]",	"The .bsp output file path (optional).");
 	printf("    %-20s : %s\n", "-verbose",		"Outputs detailed compilation progress information.");
 	printf("    %-20s : %s\n", "-entverbose",	"Outputs detailed entity information.");
 	printf("    %-20s : %s\n", "-updateents",	"Do an entity update from .map to .bsp.");

@@ -15,6 +15,7 @@
 #include "glight.h"
 #include "gbsplib.h"
 #include "gbsptools.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
 	printf("glight v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
@@ -40,14 +41,16 @@ int main(int argc, char *argv[]) {
 		return result;
 	}
 
-	// finished loading dll, begin with LIGHT compilation
-	char bspFullPath[MAX_PATH];
-	sprintf_s(bspFullPath, "%s\\%s%s", path, compParms.mapName, ".bsp");
+	std::string bspPath(compParms.mapName);
+
+	// make path readable for GBSPLib and use this extension if not provided
+	GBSPTools::PathToUnix(bspPath);
+	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
 	printf("---- %s ----\n", "BEGIN glight");
 
-	if (compFHook->GBSP_LightGBSPFile(bspFullPath, &compParms.light) == GBSP_ERROR) {
-		fprintf(stderr, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspFullPath);
+	if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
+		fprintf(stderr, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
@@ -60,7 +63,7 @@ int main(int argc, char *argv[]) {
 
 //========================================================================================
 //	ParseCmdArgs()
-//	This parse command line arguments for load them into compiler parameters
+//	This parse command line arguments to load them into the compiler parameters
 //========================================================================================
 void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 	if (argc < 2)
