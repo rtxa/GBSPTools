@@ -15,7 +15,7 @@
 
 int main(int argc, char *argv[]) {
 	printf("gbsp v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
-	printf("Genesis 3D BSP Tools - Made by %s\n", GBSPTOOLS_AUTHOR);
+	printf("Genesis 3D BSP Tools - Author: %s\n", GBSPTOOLS_AUTHOR);
 	printf("Check readme.md for more info abouts these tools.\n");
 	printf("Submit detailed bug reports to %s\n", GBSPTOOLS_CONTACT);
 
@@ -58,15 +58,15 @@ int main(int argc, char *argv[]) {
 	GBSPTools::DefaultExtension(mapPath, ".map");
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
-	printf("---- %s ----\n", "BEGIN gbsp");
+	ShowSettings(compParms);
+
+	// Begin with GBSP
 
 	if (compParms.updateEnts == GE_TRUE) {
 		if (compFHook->GBSP_UpdateEntities(mapPath.c_str(), bspPath.c_str()) == GE_TRUE) {
-			printf("---- %s ----\n\n\n\n", "END gbsp");
 			return COMPILER_ERROR_NONE;
 		} else {
 			fprintf(stderr, "Compile Failed:  GBSP_UpdateEntities returned an error, GBSPLib.Dll.\n");
-			printf("---- %s ----\n\n\n\n", "END gbsp");
 			return COMPILER_ERROR_BSPFAIL;
 		}
 	}
@@ -74,20 +74,18 @@ int main(int argc, char *argv[]) {
 	GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapPath.c_str(), &compParms.bsp);
 	if (gbspResult == GBSP_ERROR) {
 		fprintf(stderr, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n.");
-		printf("---- %s ----\n\n\n\n", "END bsp");
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
 	gbspResult = compFHook->GBSP_SaveGBSPFile(bspPath.c_str());
 	if (gbspResult == GBSP_ERROR) {
 		fprintf(stderr, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
-		printf("---- %s ----\n\n\n\n", "END gbsp");
 		return COMPILER_ERROR_BSPSAVE;
 	}
 
-	compFHook->GBSP_FreeBSP();
+	printf("\n");
 
-	printf("---- %s ----\n\n\n\n", "END gbsp");
+	compFHook->GBSP_FreeBSP();
 
 	FreeLibrary(compHandle);
 
@@ -113,9 +111,9 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 		} else if (!strcmp(argv[i], "-entverbose")) {
 			parms->bsp.EntityVerbose = GE_TRUE;
 			printf(" -entverbose");
-		} else if (!strcmp(argv[i], "-updateents")) {
+		} else if (!strcmp(argv[i], "-onlyents")) {
 			parms->updateEnts = GE_TRUE;
-			printf(" -updateents");
+			printf(" -onlyents");
 		} else {
 			if (!hasLoadMap) {
 				strcpy_s(parms->mapName, argv[i]);
@@ -146,7 +144,24 @@ void ShowUsage(void) {
 	printf("    %-20s : %s\n", "[destname]",	"The .bsp output file path (optional).");
 	printf("    %-20s : %s\n", "-verbose",		"Outputs detailed compilation progress information.");
 	printf("    %-20s : %s\n", "-entverbose",	"Outputs detailed entity information.");
-	printf("    %-20s : %s\n", "-updateents",	"Do an entity update from .map to .bsp.");
+	printf("    %-20s : %s\n", "-onlyents",		"Do an entity update from .map to .bsp.");
 	printf("\n");
 	exit(0);
+};
+
+
+//========================================================================================
+// ShowSettings()
+// This shows information about which compile paramters are enabled
+//========================================================================================
+void ShowSettings(CompilerParms parms) {
+	CompilerParms defaultParms;
+	InitCompilerParms(&defaultParms);
+	printf("\nCURRENT gbsp SETTINGS:\n");
+	printf("%-20s|%12s |%12s \n", "Name", "Setting", "Default");
+	printf("%-20s|%13s|%13s\n", "--------------------", "-------------", "-------------");
+	printf("%-20s|%12s |%12s \n", "verbose", parms.bsp.Verbose ? "on" : "off", defaultParms.bsp.Verbose ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "entverbose", parms.bsp.EntityVerbose ? "on" : "off", defaultParms.bsp.EntityVerbose ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "onlyents", parms.updateEnts ? "on" : "off", defaultParms.updateEnts ? "on" : "off");
+	printf("\n");
 };

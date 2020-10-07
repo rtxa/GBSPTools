@@ -18,7 +18,7 @@
 
 int main(int argc, char *argv[]) {
 	printf("gvis v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
-	printf("Genesis 3D BSP Tools - Made by %s\n", GBSPTOOLS_AUTHOR);
+	printf("Genesis 3D BSP Tools - Author: %s\n", GBSPTOOLS_AUTHOR);
 	printf("Check readme.md for more info abouts these tools.\n");
 	printf("Submit detailed bug reports to %s\n", GBSPTOOLS_CONTACT);
 
@@ -46,14 +46,14 @@ int main(int argc, char *argv[]) {
 	GBSPTools::PathToUnix(bspPath);
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
-	printf("---- %s ----\n", "BEGIN gvis");
-	
+	ShowSettings(compParms);
+
 	if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
 		fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
-	printf("---- %s ----\n\n\n\n", "END gvis");
+	printf("\n");
 
 	FreeLibrary(compHandle);
 
@@ -110,4 +110,20 @@ void ShowUsage(void) {
 	printf("    %-20s : %s\n", "-sortportals",	"Sort the portals with MightSee.");
 	printf("\n");
 	exit(0);
+};
+
+//========================================================================================
+// ShowSettings()
+// This shows information about which compile paramters are enabled
+//========================================================================================
+void ShowSettings(CompilerParms parms) {
+	CompilerParms defaultParms;
+	InitCompilerParms(&defaultParms);
+	printf("\nCURRENT gvis SETTINGS:\n");
+	printf("%-20s|%12s |%12s \n", "Name", "Setting", "Default");
+	printf("%-20s|%13s|%13s\n", "--------------------", "-------------", "-------------");
+	printf("%-20s|%12s |%12s \n", "verbose", parms.vis.Verbose ? "on" : "off", defaultParms.vis.Verbose ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "full", parms.vis.FullVis ? "on" : "off", defaultParms.vis.FullVis ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "sortportals", parms.vis.SortPortals ? "on" : "off", defaultParms.vis.SortPortals ? "on" : "off");
+	printf("\n");
 };

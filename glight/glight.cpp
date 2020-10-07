@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[]) {
 	printf("glight v%.1f (%s)\n", GBSPTOOLS_VERSION, __DATE__);
-	printf("Genesis 3D BSP Tools - Made by %s\n", GBSPTOOLS_AUTHOR);
+	printf("Genesis 3D BSP Tools - Author: %s\n", GBSPTOOLS_AUTHOR);
 	printf("Check readme.md for more info abouts these tools.\n");
 	printf("Submit detailed bug reports to %s\n", GBSPTOOLS_CONTACT);
 
@@ -41,20 +41,20 @@ int main(int argc, char *argv[]) {
 		return result;
 	}
 
+	ShowSettings(compParms);
+
 	std::string bspPath(compParms.mapName);
 
 	// make path readable for GBSPLib and use this extension if not provided
 	GBSPTools::PathToUnix(bspPath);
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
-	printf("---- %s ----\n", "BEGIN glight");
-
 	if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
 		fprintf(stderr, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
-	printf("---- %s ----\n\n\n\n", "END glight");
+	printf("\n");
 
 	FreeLibrary(compHandle);
 
@@ -188,4 +188,33 @@ void ShowUsage(void) {
 	printf("    %-20s : %s\n", "-fastpatch",		"Set fast patching for fast compiles.");
 	printf("\n");
 	exit(0);
+};
+
+//========================================================================================
+// ShowSettings()
+// This shows information about which compile paramters are enabled
+//========================================================================================
+void ShowSettings(CompilerParms parms) {
+	CompilerParms defaultParms;
+	InitCompilerParms(&defaultParms);
+
+	// used only to format minlight parameters
+	char buffer1[32], buffer2[32];
+	sprintf_s(buffer1, "%.0f %.0f %.0f", parms.light.MinLight.X, parms.light.MinLight.Y, parms.light.MinLight.Z);
+	sprintf_s(buffer2, "%.0f %.0f %.0f", defaultParms.light.MinLight.X, defaultParms.light.MinLight.Y, defaultParms.light.MinLight.Z);
+
+	printf("\nCURRENT glight SETTINGS:\n");
+	printf("%-20s|%12s |%12s \n", "Name", "Setting", "Default");
+	printf("%-20s|%13s|%13s\n", "--------------------", "-------------", "-------------");
+	printf("%-20s|%12s |%12s \n", "verbose", parms.light.Verbose ? "on" : "off", defaultParms.light.Verbose ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "minlight", buffer1, buffer2);
+	printf("%-20s|%12s |%12s \n", "lightscale", std::to_string(parms.light.LightScale).c_str(), std::to_string(defaultParms.light.LightScale).c_str());
+	printf("%-20s|%12s |%12s \n", "reflectscale", std::to_string(parms.light.ReflectiveScale).c_str(), std::to_string(defaultParms.light.ReflectiveScale).c_str());
+	printf("%-20s|%12s |%12s \n", "extra", parms.light.ExtraSamples ? "on" : "off", defaultParms.light.ExtraSamples ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "radiosity", parms.light.Radiosity ? "on" : "off", defaultParms.light.Radiosity ? "on" : "off");
+	printf("%-20s|%12s |%12s \n", "bounce", std::to_string(parms.light.NumBounce).c_str(), std::to_string(defaultParms.light.NumBounce).c_str());
+	printf("%-20s|%12s |%12s \n", "patchsize", std::to_string(parms.light.PatchSize).c_str(), std::to_string(defaultParms.light.PatchSize).c_str());
+	printf("%-20s|%12s |%12s \n", "fastpatch", parms.light.FastPatch ? "on" : "off", defaultParms.light.FastPatch ? "on" : "off");
+
+	printf("\n");
 };

@@ -23,5 +23,6 @@ void InitCompilerParms(CompilerParms *parms) {
 
 void ParseCmdArgs(int, char *[], CompilerParms *);
 void ShowUsage(void);
+void ShowSettings(CompilerParms parms);
 
 #endif // GLIGHT_H
