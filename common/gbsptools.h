@@ -37,7 +37,7 @@ static void Compiler_PrintfCallback(char *format, ...) {
 static void Compiler_ErrorfCallback(char *format, ...) {
 	va_list argptr;
 	va_start(argptr, format);
-	vfprintf_s(stderr, format, argptr);
+	vfprintf_s(stdout, format, argptr);
 	va_end(argptr);	
 }
 
@@ -50,20 +50,20 @@ CompilerErrorEnum Compiler_LoadCompilerDLL(GBSP_FuncHook* &pFHook, HINSTANCE& pH
 
 	pHandle = LoadLibrary("gbsplib.dll");
 	if (pHandle == nullptr) {
-		fprintf(stderr, "Compile Failed: Unable to load GBSPLib.Dll!");
+		fprintf(stdout, "Compile Failed: Unable to load GBSPLib.Dll!\n");
 		return COMPILER_ERROR_NODLL;
 	}
 
 	GBSP_INIT* pCompInit = (GBSP_INIT*)GetProcAddress(pHandle, "GBSP_Init");
 	if (pCompInit == nullptr) {
-		fprintf(stderr, "Compile Failed: Couldn't initialize GBSP_Init, GBSPLib.Dll.\n");
+		fprintf(stdout, "Compile Failed: Couldn't initialize GBSP_Init, GBSPLib.Dll.\n");
 		FreeLibrary(pHandle);
 		return COMPILER_ERROR_MISSINGFUNC;
 	}
 
 	pFHook = pCompInit(&compHook);
 	if (pFHook == nullptr) {
-		fprintf(stderr, "Compile Failed: GBSP_Init returned NULL Hook!, GBSPLib.Dll.\n");
+		fprintf(stdout, "Compile Failed: GBSP_Init returned NULL Hook!, GBSPLib.Dll.\n");
 		FreeLibrary(pHandle);
 		return COMPILER_ERROR_MISSINGFUNC;
 	}

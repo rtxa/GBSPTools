@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
 	if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
-		fprintf(stderr, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
+		fprintf(stdout, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
@@ -96,11 +96,11 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 				parms->light.MinLight.Z = strtof(argv[++i], NULL);
 
 				if (errno == ERANGE) {
-					fprintf(stderr, "\nError: Bad arguments for -minlight\n\n\n\n");
+					fprintf(stdout, "\nError: Bad arguments for -minlight\n\n\n\n");
 					exit(COMPILER_ERROR_BADARG);
 				}
 			} else {
-				fprintf(stderr, "\nError: Missing arguments for -minlight\n\n\n\n");
+				fprintf(stdout, "\nError: Missing arguments for -minlight\n\n\n\n");
 				exit(COMPILER_ERROR_BADARG);
 			}
 		} else if (!strcmp(argv[i], "-lightscale")) {
@@ -109,11 +109,11 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 				printf(" %s", argv[i + 1]);
 				parms->light.LightScale = strtof(argv[++i], NULL);
 				if (errno == ERANGE) {
-					fprintf(stderr, "\nError: Bad argument for -lightscale\n\n\n\n");
+					fprintf(stdout, "\nError: Bad argument for -lightscale\n\n\n\n");
 					exit(COMPILER_ERROR_BADARG);
 				}
 			} else {
-				fprintf(stderr, "\nError: Missing argument for -lightscale\n\n\n\n");
+				fprintf(stdout, "\nError: Missing argument for -lightscale\n\n\n\n");
 				exit(COMPILER_ERROR_BADARG);
 			}
 		} else if (!strcmp(argv[i], "-reflectscale")) {
@@ -122,11 +122,11 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 				printf(" %s", argv[i + 1]);
 				parms->light.ReflectiveScale = strtof(argv[++i], NULL);
 				if (errno == ERANGE) {
-					fprintf(stderr, "\nError: Bad argument for -reflectscale\n\n\n\n");
+					fprintf(stdout, "\nError: Bad argument for -reflectscale\n\n\n\n");
 					exit(COMPILER_ERROR_BADARG);
 				}
 			} else {
-				fprintf(stderr, "\nError: Missing argument for -reflectscale\n\n\n\n");
+				fprintf(stdout, "\nError: Missing argument for -reflectscale\n\n\n\n");
 				exit(COMPILER_ERROR_BADARG);
 			}
 		} else if (!strcmp(argv[i], "-patchsize")) {
@@ -135,11 +135,11 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 				printf(" %s", argv[i + 1]);
 				parms->light.PatchSize = strtof(argv[++i], NULL);
 				if (errno == ERANGE) {
-					fprintf(stderr, "\nError: Bad argument for -patchsize\n\n\n\n");
+					fprintf(stdout, "\nError: Bad argument for -patchsize\n\n\n\n");
 					exit(COMPILER_ERROR_BADARG);
 				}
 			} else {
-				fprintf(stderr, "\nError: Missing argument for -patchsize\n\n\n\n");
+				fprintf(stdout, "\nError: Missing argument for -patchsize\n\n\n\n");
 				exit(COMPILER_ERROR_BADARG);
 			}
 		} else if (!strcmp(argv[i], "-bounce")) {
@@ -148,11 +148,11 @@ void ParseCmdArgs(int argc, char *argv[], CompilerParms *parms) {
 				printf(" %s", argv[i + 1]);
 				parms->light.NumBounce = strtol(argv[++i], NULL, 10);
 				if (errno == ERANGE) {
-					fprintf(stderr, "\nError: Bad argument for -bounce\n\n\n\n");
+					fprintf(stdout, "\nError: Bad argument for -bounce\n\n\n\n");
 					exit(COMPILER_ERROR_BADARG);
 				}
 			} else {
-				fprintf(stderr, "\nError: Missing argument for -bounce\n\n\n\n");
+				fprintf(stdout, "\nError: Missing argument for -bounce\n\n\n\n");
 				exit(COMPILER_ERROR_BADARG);
 			}
 		} else {

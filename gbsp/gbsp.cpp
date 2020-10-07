@@ -66,20 +66,20 @@ int main(int argc, char *argv[]) {
 		if (compFHook->GBSP_UpdateEntities(mapPath.c_str(), bspPath.c_str()) == GE_TRUE) {
 			return COMPILER_ERROR_NONE;
 		} else {
-			fprintf(stderr, "Compile Failed:  GBSP_UpdateEntities returned an error, GBSPLib.Dll.\n");
+			fprintf(stdout, "Compile Failed:  GBSP_UpdateEntities returned an error, GBSPLib.Dll.\n");
 			return COMPILER_ERROR_BSPFAIL;
 		}
 	}
 
 	GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapPath.c_str(), &compParms.bsp);
 	if (gbspResult == GBSP_ERROR) {
-		fprintf(stderr, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n.");
+		fprintf(stdout, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n");
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
 	gbspResult = compFHook->GBSP_SaveGBSPFile(bspPath.c_str());
 	if (gbspResult == GBSP_ERROR) {
-		fprintf(stderr, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
+		fprintf(stdout, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPSAVE;
 	}
 

@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	ShowSettings(compParms);
 
 	if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
-		fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
+		fprintf(stdout, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
 		return COMPILER_ERROR_BSPFAIL;
 	}
 
