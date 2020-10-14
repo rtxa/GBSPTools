@@ -1,25 +1,23 @@
-# GBSPTools - Genesis 3D BSP Tools
+# GBSPTools - Genesis3D BSP Tools
+
 The GBSP, GVIS and GLIGHT tools together build and light your map for the Genesis3D Engine.
-These tools were created to allow them to be used within different level editors and with that obtain more flexibility.
-The design of these tools are based on ZHLT Compile Tools.
+These tools were created to allow them to be used within different level editors for more flexibility.
 
 ## Commands
-### Shared by all tools
-	// The .map (BSP) or .bsp (VIS and Light) file to process.
-	mapname
 
+### Shared by all tools
 	// Outputs detailed compilation progress information.
 	// Default: Off
 	-verbose
 
-### BSP - Creates level geometry from .map
+### BSP - Creates level geometry from .map file into a playable .bsp file.
     // Outputs detailed entity information to the console window.
     // Default: Off
     -entverbose
 
-    // Update entities from BSP.
+    // Do an entity update from .map to .bsp
     // Default: Off
-    -updateents
+    -onlyents
 
 ### VIS - Performs potential visible set calculations on compiled level.
 
@@ -28,15 +26,11 @@ The design of these tools are based on ZHLT Compile Tools.
 	// Default: Off
 	-full
 
-	// Sort the portals with MightSee.
+	// Sort the portals you might see.
 	// Default: Off
 	-sortportals
 
 ### Light - Performs calculations to add lighting effects to the level.
-	// Outputs detailed compilation progress information to the console window.
-	// Default: Off
-	-verbose
-
 	// Illuminates all surfaces with the light color specified.
 	// Default: 0 0 0 | Range: 0-255 0-255 0-255
 	-minlight r g b 
@@ -52,6 +46,7 @@ The design of these tools are based on ZHLT Compile Tools.
     -reflectscale
 
 	// Uses more samples to give finer lighting effects.
+    // This switch should be used when running final map compiles.
     // Default: Off
     -extra
 
@@ -74,3 +69,8 @@ The design of these tools are based on ZHLT Compile Tools.
     // Set fast patching for fast compiles.
     // Default: Off
     -fastpatch
+
+
+## Required files
+
+- GBSPLib.dll from the Genesis3D engine fork you are going to create the map (Entidad 3D, Reality Factory, GTest and more).
