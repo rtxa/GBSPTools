@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{19CA9A
 		common\vec3d.h = common\vec3d.h
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbspandvis", "gbspandvis\gbspandvis.vcxproj", "{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{21C9CE1B-C1B9-44D5-83FA-50270E8905CC}.Release|x64.Build.0 = Release|x64
 		{21C9CE1B-C1B9-44D5-83FA-50270E8905CC}.Release|x86.ActiveCfg = Release|Win32
 		{21C9CE1B-C1B9-44D5-83FA-50270E8905CC}.Release|x86.Build.0 = Release|Win32
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Debug|x64.ActiveCfg = Debug|x64
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Debug|x64.Build.0 = Debug|x64
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Debug|x86.ActiveCfg = Debug|Win32
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Debug|x86.Build.0 = Debug|Win32
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Release|x64.ActiveCfg = Release|x64
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Release|x64.Build.0 = Release|x64
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Release|x86.ActiveCfg = Release|Win32
+		{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
