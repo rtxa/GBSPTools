@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{19CA9A
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbspandvis", "gbspandvis\gbspandvis.vcxproj", "{B9A4A5DA-2982-4C38-8985-D81AB2AB4FF0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbsptools", "gbsptools\gbsptools.vcxproj", "{18234DB9-6D24-4517-BB32-61892F3ECA32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
