@@ -140,7 +140,7 @@ void ParseCmdArgs(int argc, char* argv[], CompilerParms* parms) {
 			continue;
 		}
 		else if (!strcmp(argv[i], "-glight")) {
-			currentFlag = READING_VIS;
+			currentFlag = READING_LIGHT;
 			printf(" -glight");
 			continue;
 		}
