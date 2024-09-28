@@ -19,18 +19,19 @@ int main(int argc, char* argv[]) {
 	printf("Check README.md for more info abouts these tools.\n");
 	printf("Submit detailed bug reports to %s\n", GBSPTOOLS_CONTACT);
 
+	// Get current directory
 	char path[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, path);
 	printf("Command line: \"%s\"\n", path);
 
+	// Initialize compiler parameters
 	CompilerParms compParms;
 	InitCompilerParms(&compParms);
 	ParseCmdArgs(argc, argv, &compParms);
 
-	// load gbsplib.dll to access the map compiler functions
+	// Load the compiler DLL (GBSPLib.dll)
 	HINSTANCE compHandle;
 	GBSP_FuncHook* compFHook;
-
 	CompilerErrorEnum result = Compiler_LoadCompilerDLL(compFHook, compHandle, Compiler_ErrorfCallback, Compiler_PrintfCallback);
 
 	if (result != CompilerErrorEnum::COMPILER_ERROR_NONE) {
@@ -38,10 +39,9 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::string mapPath(compParms.mapName);
-
 	std::string bspPath;
 
-	// create destination name if not specified
+	// Create destination name if not specified
 	if (!compParms.bspName[0]) {
 		bspPath = std::string(mapPath);
 		GBSPTools::StripExtension(bspPath);
@@ -51,14 +51,11 @@ int main(int argc, char* argv[]) {
 		bspPath = std::string(compParms.bspName);
 	}
 
-	// convert path to unix so GBSPLib can read it correctly
+	// Convert paths to Unix format (GBSPLib expects that) and set defaults
 	GBSPTools::PathToUnix(mapPath);
 	GBSPTools::PathToUnix(bspPath);
-
-	// use this extension if specified files don't provide them
 	GBSPTools::DefaultExtension(mapPath, ".map");
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
-
 
 	// Begin with GBSP
 	if (compParms.isBspEnabled) {
@@ -86,6 +83,7 @@ int main(int argc, char* argv[]) {
 		printf("\n");
 	}
 
+	// Begin with GVIS
 	if (compParms.isVisEnabled) {
 		ShowSettingsVis(compParms);
 		if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
@@ -95,6 +93,7 @@ int main(int argc, char* argv[]) {
 		printf("\n");
 	}
 
+	// Begin with GLIGHT
 	if (compParms.isLightEnabled) {
 		ShowSettingsLight(compParms);
 		if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
