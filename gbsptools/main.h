@@ -9,6 +9,9 @@
 typedef struct {
 	char mapName[MAX_PATH];
 	char bspName[MAX_PATH];
+	bool isBspEnabled;
+	bool isVisEnabled;
+	bool isLightEnabled;
 	BspParms bsp;
 	VisParms vis;
 	LightParms light;
@@ -16,6 +19,9 @@ typedef struct {
 } CompilerParms;
 
 void InitCompilerParms(CompilerParms* parms) {
+	parms->isBspEnabled = false;
+	parms->isVisEnabled = false;
+	parms->isLightEnabled = false;
 	parms->bsp.Verbose = GE_FALSE;
 	parms->bsp.EntityVerbose = GE_FALSE;
 	parms->vis.FullVis = GE_FALSE;

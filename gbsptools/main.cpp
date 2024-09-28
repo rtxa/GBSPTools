@@ -59,51 +59,50 @@ int main(int argc, char* argv[]) {
 	GBSPTools::DefaultExtension(mapPath, ".map");
 	GBSPTools::DefaultExtension(bspPath, ".bsp");
 
-	ShowSettingsBsp(compParms);
 
 	// Begin with GBSP
-
-	if (compParms.updateEnts == GE_TRUE) {
-		if (compFHook->GBSP_UpdateEntities(mapPath.c_str(), bspPath.c_str()) == GE_TRUE) {
-			return COMPILER_ERROR_NONE;
+	if (compParms.isBspEnabled) {
+		ShowSettingsBsp(compParms);
+		if (compParms.updateEnts == GE_TRUE) {
+			if (compFHook->GBSP_UpdateEntities(mapPath.c_str(), bspPath.c_str()) != GE_TRUE) {
+				fprintf(stdout, "Compile Failed:  GBSP_UpdateEntities returned an error, GBSPLib.Dll.\n");
+				return COMPILER_ERROR_BSPFAIL;
+			}
 		}
 		else {
-			fprintf(stdout, "Compile Failed:  GBSP_UpdateEntities returned an error, GBSPLib.Dll.\n");
+			GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapPath.c_str(), &compParms.bsp);
+			if (gbspResult == GBSP_ERROR) {
+				fprintf(stdout, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n");
+				return COMPILER_ERROR_BSPFAIL;
+			}
+
+			gbspResult = compFHook->GBSP_SaveGBSPFile(bspPath.c_str());
+			if (gbspResult == GBSP_ERROR) {
+				fprintf(stdout, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
+				return COMPILER_ERROR_BSPSAVE;
+			}
+		}
+		compFHook->GBSP_FreeBSP();
+		printf("\n");
+	}
+
+	if (compParms.isVisEnabled) {
+		ShowSettingsVis(compParms);
+		if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
+			fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
 			return COMPILER_ERROR_BSPFAIL;
 		}
+		printf("\n");
 	}
 
-	compFHook->GBSP_FreeBSP();
-
-	GBSP_RETVAL gbspResult = compFHook->GBSP_CreateBSP(mapPath.c_str(), &compParms.bsp);
-	if (gbspResult == GBSP_ERROR) {
-		fprintf(stdout, "Compile Failed: GBSP_CreateBSP encountered an error, GBSPLib.Dll.\n");
-		return COMPILER_ERROR_BSPFAIL;
+	if (compParms.isLightEnabled) {
+		ShowSettingsLight(compParms);
+		if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
+			fprintf(stdout, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
+			return COMPILER_ERROR_BSPFAIL;
+		}
+		printf("\n");
 	}
-
-	gbspResult = compFHook->GBSP_SaveGBSPFile(bspPath.c_str());
-	if (gbspResult == GBSP_ERROR) {
-		fprintf(stdout, "Compile Failed: GBSP_SaveGBSPFile for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
-		return COMPILER_ERROR_BSPSAVE;
-	}
-
-	printf("\n");
-
-	ShowSettingsVis(compParms);
-
-	if (compFHook->GBSP_VisGBSPFile(bspPath.c_str(), &compParms.vis) == GBSP_ERROR) {
-		fprintf(stderr, "Warning: GBSP_VisGBSPFile failed for file : %s, GBSPLib.Dll.\n", bspPath.c_str());
-		return COMPILER_ERROR_BSPFAIL;
-	}
-
-	ShowSettingsLight(compParms);
-
-	if (compFHook->GBSP_LightGBSPFile(bspPath.c_str(), &compParms.light) == GBSP_ERROR) {
-		fprintf(stdout, "Warning: GBSP_LightGBSPFile failed for file: %s, GBSPLib.Dll.\n", bspPath.c_str());
-		return COMPILER_ERROR_BSPFAIL;
-	}
-
-	printf("\n");
 
 	FreeLibrary(compHandle);
 
@@ -126,20 +125,26 @@ void ParseCmdArgs(int argc, char* argv[], CompilerParms* parms) {
 	const int READING_LIGHT = 3;
 
 	int currentFlag = 0;
+	bool isBspEnabled = false;
+	bool isVisEnabled = false;
+	bool isLightEnabled = false;
 
 	printf("Arguments:");
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-gbsp")) {
+			parms->isBspEnabled = true;
 			currentFlag = READING_BSP;
 			printf(" -gbsp");
 			continue;
 		}
 		else if (!strcmp(argv[i], "-gvis")) {
+			parms->isVisEnabled = true;
 			currentFlag = READING_VIS;
 			printf(" -gvis");
 			continue;
 		}
 		else if (!strcmp(argv[i], "-glight")) {
+			parms->isLightEnabled = true;
 			currentFlag = READING_LIGHT;
 			printf(" -glight");
 			continue;
