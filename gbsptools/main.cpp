@@ -124,9 +124,6 @@ void ParseCmdArgs(int argc, char* argv[], CompilerParms* parms) {
 	const int READING_LIGHT = 3;
 
 	int currentFlag = 0;
-	bool isBspEnabled = false;
-	bool isVisEnabled = false;
-	bool isLightEnabled = false;
 
 	printf("Arguments:");
 	for (int i = 1; i < argc; i++) {
